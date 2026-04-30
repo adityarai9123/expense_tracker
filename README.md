@@ -1,295 +1,271 @@
 # 💰 Expense Tracker
 
-A production-quality full-stack personal finance expense tracker built with **React**, **Node.js/Express**, and **MongoDB**.
+A production-quality full-stack personal finance expense tracker built with React, Express, and MongoDB.
+
+![Tech Stack](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![Tech Stack](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![Tech Stack](https://img.shields.io/badge/MongoDB-8-47A248?logo=mongodb&logoColor=white)
+![Tech Stack](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)
+![Deploy](https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel&logoColor=white)
 
 ---
 
-## 📸 Features
+## ✨ Features
 
-- ✅ Add expenses with amount, category, description, and date
-- ✅ Filter by category and sort by date (newest/oldest)
-- ✅ Total expense summary with per-category breakdown bar chart
-- ✅ Idempotent API (safe to retry — no duplicate expenses)
-- ✅ Loading skeletons, error states, and disabled submit on pending
-- ✅ Responsive design (mobile + desktop)
-- ✅ Clean MVC backend with input validation and global error handling
+- **Add Expenses** — amount, category, description, and date
+- **View Transactions** — sorted list with category icons and color coding
+- **Filter & Sort** — filter by category, sort newest/oldest first
+- **Summary Dashboard** — total spent, average per expense, per-category breakdown with progress bars
+- **Idempotent Submissions** — prevents duplicate expenses on network retries
+- **Loading & Error States** — skeleton loaders, form validation, API error messages
+- **Responsive Design** — works on mobile, tablet, and desktop
 
 ---
 
-## 🗂 Project Structure
+## 🏗️ Tech Stack
+
+| Layer     | Technology                          |
+|-----------|-------------------------------------|
+| Frontend  | React 18, Vite, Tailwind CSS, Axios |
+| Backend   | Node.js, Express.js                 |
+| Database  | MongoDB (Mongoose 8)                |
+| Deploy    | Vercel (experimental services)      |
+
+---
+
+## 📂 Project Structure
 
 ```
 expense-tracker/
+├── vercel.json              # Root Vercel config (experimental services)
+├── .gitignore
+├── README.md
 ├── backend/
-│   ├── server.js                 # Express app entry point
+│   ├── api/
+│   │   └── index.js         # Vercel serverless entry point
+│   ├── config/
+│   │   └── db.js            # MongoDB connection
+│   ├── controllers/
+│   │   └── expenseController.js
+│   ├── middleware/
+│   │   ├── errorHandler.js  # Global error handler
+│   │   └── validateExpense.js
+│   ├── models/
+│   │   └── Expense.js       # Mongoose schema
+│   ├── routes/
+│   │   └── expenseRoutes.js
+│   ├── server.js            # Express app (exports for Vercel)
+│   ├── vercel.json          # Backend rewrites
 │   ├── package.json
 │   ├── .env.example
-│   ├── config/
-│   │   └── db.js                 # MongoDB connection
-│   ├── models/
-│   │   └── Expense.js            # Mongoose schema
-│   ├── controllers/
-│   │   └── expenseController.js  # Business logic
-│   ├── routes/
-│   │   └── expenseRoutes.js      # Route definitions
-│   └── middleware/
-│       ├── validateExpense.js    # Request validation
-│       └── errorHandler.js       # Global error handler
-│
+│   └── .env                 # (gitignored)
 └── frontend/
+    ├── src/
+    │   ├── components/
+    │   │   ├── ExpenseForm.jsx
+    │   │   ├── ExpenseItem.jsx
+    │   │   ├── ExpenseList.jsx
+    │   │   ├── FilterBar.jsx
+    │   │   └── Summary.jsx
+    │   ├── pages/
+    │   │   └── Dashboard.jsx
+    │   ├── services/
+    │   │   └── api.js        # Axios with auto base URL detection
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   └── index.css
     ├── index.html
     ├── vite.config.js
     ├── tailwind.config.js
     ├── postcss.config.js
     ├── package.json
-    ├── .env.example
-    └── src/
-        ├── main.jsx
-        ├── App.jsx
-        ├── index.css             # Tailwind + custom utilities
-        ├── services/
-        │   └── api.js            # Axios instance + API calls
-        ├── pages/
-        │   └── Dashboard.jsx     # Main page layout + state
-        └── components/
-            ├── ExpenseForm.jsx   # Add expense form
-            ├── ExpenseList.jsx   # List container + skeleton
-            ├── ExpenseItem.jsx   # Single expense row
-            ├── FilterBar.jsx     # Category filter + sort
-            └── Summary.jsx       # Totals + category bars
+    └── .env.example
 ```
 
 ---
 
-## 🚀 Setup Instructions
+## 🚀 Local Development Setup
 
 ### Prerequisites
 
-- Node.js v18+
-- MongoDB Atlas account (free tier works) **or** local MongoDB
-- npm or yarn
+- Node.js ≥ 18
+- MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
 
----
-
-### 1. Clone / Download
+### 1. Clone & Install
 
 ```bash
-# If you cloned the repo:
-cd expense-tracker
-```
+git clone https://github.com/adityarai9123/expense_tracker.git
+cd expense_tracker
 
----
-
-### 2. Backend Setup
-
-```bash
+# Install backend dependencies
 cd backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
-Create your `.env` file:
+### 2. Configure Environment Variables
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-
+**Backend** (`backend/.env`):
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/expense-tracker?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/expense-tracker?retryWrites=true&w=majority
 CLIENT_URL=http://localhost:5173
 ```
 
-Start the backend:
-
-```bash
-# Development (with auto-reload)
-npm run dev
-
-# Production
-npm start
-```
-
-Server runs at: **http://localhost:5000**
-
----
-
-### 3. Frontend Setup
-
-```bash
-cd frontend
-npm install
-```
-
-Create your `.env` file:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-
+**Frontend** (`frontend/.env`):
 ```env
 VITE_API_BASE_URL=http://localhost:5000
 ```
 
-Start the frontend:
+### 3. Run Both Servers
 
 ```bash
+# Terminal 1 — Backend
+cd backend
+npm start        # or: npm run dev (with nodemon)
+
+# Terminal 2 — Frontend
+cd frontend
 npm run dev
 ```
 
-App runs at: **http://localhost:5173**
+Open **http://localhost:5173** in your browser.
 
 ---
 
-## 🌍 Environment Variables
+## ☁️ Vercel Deployment
 
-### Backend (`backend/.env`)
+This project uses **Vercel Experimental Services** to deploy both frontend and backend from a single repo.
 
-| Variable     | Required | Default                   | Description                       |
-|--------------|----------|---------------------------|-----------------------------------|
-| `PORT`       | No       | `5000`                    | Express server port               |
-| `MONGO_URI`  | **Yes**  | —                         | MongoDB connection string         |
-| `CLIENT_URL` | No       | `http://localhost:5173`   | Allowed CORS origin               |
+### How It Works
 
-### Frontend (`frontend/.env`)
+| Service   | Route Prefix  | Framework |
+|-----------|--------------|-----------|
+| Frontend  | `/`          | Vite      |
+| Backend   | `/_/backend` | Node.js   |
 
-| Variable              | Required | Default                  | Description            |
-|-----------------------|----------|--------------------------|------------------------|
-| `VITE_API_BASE_URL`   | No       | `http://localhost:5000`  | Backend base URL       |
+### Deploy Steps
+
+1. **Push to GitHub** (already done)
+
+2. **Import in Vercel**:
+   - Go to [vercel.com/new](https://vercel.com/new)
+   - Import your GitHub repo: `adityarai9123/expense_tracker`
+   - Vercel will auto-detect the `vercel.json` at the root
+
+3. **Set Environment Variables** in Vercel dashboard:
+
+   | Key          | Value                                | Service  |
+   |-------------|--------------------------------------|----------|
+   | `MONGO_URI` | Your MongoDB Atlas connection string | Backend  |
+   | `CLIENT_URL`| Your Vercel deployment URL (e.g. `https://expense-tracker-xyz.vercel.app`) | Backend |
+
+4. **Deploy** — Vercel handles the rest!
+
+### Architecture on Vercel
+
+```
+Browser → vercel.app/             → Frontend (Vite static)
+Browser → vercel.app/_/backend/*  → Backend (Express serverless)
+```
+
+The frontend auto-detects production and routes API calls to `/_/backend` — no manual URL configuration needed.
 
 ---
 
-## 📡 API Reference
+## 🔌 API Reference
 
 ### `POST /expenses`
 
 Create a new expense.
 
-**Request Body:**
 ```json
 {
-  "amount": 24.99,
+  "amount": 25.50,
   "category": "Food",
   "description": "Lunch at café",
-  "date": "2024-01-15",
-  "idempotencyKey": "uuid-here"
+  "date": "2025-01-15",
+  "idempotencyKey": "uuid-v4"
 }
 ```
 
-**Responses:**
-- `201 Created` — expense created successfully
-- `200 OK` — duplicate detected, returns existing record (`duplicate: true`)
-- `400 Bad Request` — validation failed
-
----
-
-### `GET /expenses`
-
-Fetch expenses with optional filters.
-
-**Query Params:**
-| Param      | Description                              | Example            |
-|------------|------------------------------------------|--------------------|
-| `category` | Filter by category name                  | `?category=Food`   |
-| `sort`     | `date_desc` (default) or `date_asc`      | `?sort=date_asc`   |
-
-**Response:**
+**Response** `201 Created`:
 ```json
 {
   "success": true,
-  "count": 5,
-  "total": 142.50,
-  "categoryBreakdown": {
-    "Food": 42.50,
-    "Transport": 100.00
-  },
-  "data": [...]
+  "data": { "_id": "...", "amount": 25.5, "category": "Food", ... }
 }
 ```
 
----
+### `GET /expenses`
+
+Fetch all expenses with optional filters.
+
+| Param      | Example       | Description          |
+|-----------|---------------|----------------------|
+| `category` | `Food`       | Filter by category   |
+| `sort`     | `date_desc`  | `date_desc` or `date_asc` |
+
+**Response** `200 OK`:
+```json
+{
+  "success": true,
+  "count": 12,
+  "total": 847.25,
+  "categoryBreakdown": { "Food": 250.00, "Transport": 120.00 },
+  "data": [...]
+}
+```
 
 ### `GET /health`
 
 Health check endpoint.
 
-```json
-{ "status": "ok", "timestamp": "..." }
-```
+---
+
+## 🎨 Design Decisions
+
+1. **Idempotency Keys** — Every expense submission generates a `crypto.randomUUID()` key. If the same key is re-sent (e.g., network retry), the server returns the existing record instead of creating a duplicate.
+
+2. **Centralized Axios Instance** — All API calls go through a single Axios instance with interceptors for consistent error handling, timeouts, and base URL resolution.
+
+3. **Vercel Experimental Services** — Both frontend and backend deploy from one repo. The backend runs as serverless functions via the `api/index.js` entry point, while the frontend is a standard Vite build.
+
+4. **`require.main === module`** — The Express server only starts listening on a port when run directly (`npm start`). When imported by Vercel's serverless runtime, it exports the app without binding to a port.
+
+5. **MVC Architecture** — Backend follows clean separation: Models → Controllers → Routes → Middleware. Each layer has a single responsibility.
 
 ---
 
-## 🏗 Key Design Decisions
+## ⚠️ Trade-offs & Limitations
 
-### Idempotency
-Each form submission generates a client-side `idempotencyKey` (UUID). On the backend, this key is stored as a unique index in MongoDB. If a duplicate key is detected (e.g., user double-clicks or retries after a network failure), the server returns the existing record with `duplicate: true` instead of creating a duplicate — ensuring exactly-once semantics.
-
-### Money Handling
-Amounts are stored as `Number` in MongoDB with a Mongoose `set` hook that rounds to 2 decimal places (`parseFloat(v.toFixed(2))`). This avoids floating-point drift. For high-precision financial applications, `Decimal128` or storing as integer cents would be preferred.
-
-### MVC Pattern
-The backend follows a strict Model → Controller → Route separation:
-- **Models** define schema and database structure
-- **Controllers** contain all business logic
-- **Routes** are thin — they only wire HTTP verbs to controllers
-- **Middleware** handles cross-cutting concerns (validation, error handling)
-
-### Axios Centralization
-All HTTP calls go through a single Axios instance (`src/services/api.js`) with:
-- A shared base URL from environment
-- A 12-second timeout
-- A response interceptor that normalizes all error formats into a single `Error` object
-
-### State Management
-React's built-in hooks (`useState`, `useEffect`, `useCallback`) are sufficient for this scope. The Dashboard owns all state and passes down only what each child needs. `useCallback` on `fetchExpenses` prevents unnecessary re-fetches when unrelated state changes.
-
----
-
-## ⚖️ Trade-offs & Intentional Omissions
-
-| Topic                   | Decision & Reason                                                                                  |
-|-------------------------|----------------------------------------------------------------------------------------------------|
-| **Authentication**      | Not implemented — added significantly more infrastructure (JWT, sessions, user model) out of scope |
-| **Pagination**          | Not implemented — for real-world use with large datasets, cursor-based pagination would be needed  |
-| **Delete / Edit**       | Not implemented — CRUD completeness deferred to keep scope manageable                             |
-| **TypeScript**          | Explicitly excluded per spec — JS used throughout                                                  |
-| **State library**       | No Redux/Zustand — React hooks sufficient for single-page, single-user scope                       |
-| **Testing**             | No unit/integration tests — would add Jest + Supertest for backend, React Testing Library for UI  |
-| **Decimal128**          | Used `Number` with rounding instead — simpler for display; acceptable for personal-scale use       |
-| **Docker / CI**         | Not included — would add `Dockerfile` + `docker-compose.yml` for production deployment            |
+| Decision | Rationale |
+|----------|-----------|
+| No authentication | Kept minimal for MVP scope |
+| No DELETE/PUT endpoints | Focused on create + read per requirements |
+| No pagination | Sufficient for personal expense tracking volumes |
+| No caching | MongoDB queries are fast enough at this scale |
+| Client-side filtering | Server already returns filtered data; client relies on API params |
 
 ---
 
 ## 🔮 Future Improvements
 
-- [ ] **Authentication** — JWT-based login/register, per-user expense isolation
-- [ ] **Edit & Delete** — Full CRUD on expenses
-- [ ] **Pagination** — Cursor-based infinite scroll or page navigation
-- [ ] **Date range filter** — Filter expenses by custom date range (e.g., current month)
-- [ ] **CSV / PDF Export** — Download expense reports
-- [ ] **Charts** — Monthly trend line chart, pie chart per category (Recharts or Chart.js)
-- [ ] **Budget limits** — Set per-category budgets with visual warnings
-- [ ] **Testing** — Jest + Supertest for API, React Testing Library for components
-- [ ] **Docker** — Containerize both services with `docker-compose`
-- [ ] **Deployment** — Railway / Render (backend) + Vercel (frontend)
-- [ ] **PWA** — Offline support with service worker
-
----
-
-## 🛠 Tech Stack
-
-| Layer      | Technology                           |
-|------------|--------------------------------------|
-| Frontend   | React 18, Vite, Tailwind CSS, Axios  |
-| Backend    | Node.js, Express.js                  |
-| Database   | MongoDB, Mongoose                    |
-| Dev Tools  | Nodemon, Morgan                      |
+- [ ] User authentication (JWT or OAuth)
+- [ ] Edit and delete expenses
+- [ ] Pagination for large datasets
+- [ ] Date range filtering
+- [ ] Charts and analytics (monthly trends, pie charts)
+- [ ] Export to CSV
+- [ ] Dark mode toggle
+- [ ] PWA support for offline use
+- [ ] Budget limits and alerts
 
 ---
 
 ## 📄 License
 
-MIT — free to use and modify.
+MIT

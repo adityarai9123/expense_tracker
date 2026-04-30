@@ -38,26 +38,33 @@ app.use((req, res) => {
 // Global error handler (must be last)
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+// ── Local development server ─────────────────────────────────
+// Only start listening when run directly (not when imported by Vercel)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  const server = app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+  });
 
-// Handle port-in-use errors gracefully
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use.`);
-    console.error(`   Try: npx kill-port ${PORT}   or change PORT in .env`);
-    process.exit(1);
-  }
-  throw err;
-});
+  // Handle port-in-use errors gracefully
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use.`);
+      console.error(`   Try: npx kill-port ${PORT}   or change PORT in .env`);
+      process.exit(1);
+    }
+    throw err;
+  });
 
-// Graceful shutdown
-const shutdown = () => {
-  console.log('\n🛑 Shutting down gracefully...');
-  server.close(() => process.exit(0));
-  setTimeout(() => process.exit(1), 5000);
-};
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+  // Graceful shutdown
+  const shutdown = () => {
+    console.log('\n🛑 Shutting down gracefully...');
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(1), 5000);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+}
+
+// Export for Vercel serverless
+module.exports = app;

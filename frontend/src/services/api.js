@@ -1,8 +1,23 @@
 import axios from 'axios';
 
+// In production (Vercel), backend is at /_/backend
+// In development, use the env variable or localhost:5000
+const getBaseURL = () => {
+  // Explicit env override always wins
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  // Production: same origin, routed through Vercel experimental services
+  if (import.meta.env.PROD) {
+    return '/_/backend';
+  }
+  // Local dev fallback
+  return 'http://localhost:5000';
+};
+
 // Centralized Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000',
+  baseURL: getBaseURL(),
   timeout: 12000, // 12s timeout — handles slow networks
   headers: {
     'Content-Type': 'application/json',
