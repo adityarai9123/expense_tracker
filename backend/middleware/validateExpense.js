@@ -1,12 +1,18 @@
-const VALID_CATEGORIES = ['Food', 'Transport', 'Entertainment', 'Health', 'Shopping', 'Utilities', 'Other'];
+const VALID_CATEGORIES = ['Food', 'Transport', 'Entertainment', 'Health', 'Shopping', 'Utilities', 'Salary', 'Freelance', 'Investment', 'Gift', 'Other'];
+const VALID_TYPES = ['income', 'expense'];
 
 /**
- * Validates incoming expense creation requests
+ * Validates incoming expense/income creation requests
  * Returns 400 with descriptive errors on failure
  */
 const validateExpense = (req, res, next) => {
-  const { amount, category, date } = req.body;
+  const { amount, category, date, type } = req.body;
   const errors = [];
+
+  // Type validation
+  if (type && !VALID_TYPES.includes(type)) {
+    errors.push('Type must be either "income" or "expense"');
+  }
 
   // Amount validation
   if (amount === undefined || amount === null || amount === '') {

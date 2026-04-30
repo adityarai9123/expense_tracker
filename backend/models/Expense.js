@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      required: [true, 'Type is required'],
+      enum: {
+        values: ['income', 'expense'],
+        message: '{VALUE} is not a valid type. Must be income or expense',
+      },
+      default: 'expense',
+    },
     amount: {
       type: Number,
       required: [true, 'Amount is required'],
@@ -13,7 +22,7 @@ const expenseSchema = new mongoose.Schema(
       required: [true, 'Category is required'],
       trim: true,
       enum: {
-        values: ['Food', 'Transport', 'Entertainment', 'Health', 'Shopping', 'Utilities', 'Other'],
+        values: ['Food', 'Transport', 'Entertainment', 'Health', 'Shopping', 'Utilities', 'Salary', 'Freelance', 'Investment', 'Gift', 'Other'],
         message: '{VALUE} is not a valid category',
       },
     },
@@ -43,5 +52,6 @@ const expenseSchema = new mongoose.Schema(
 // Index for common queries
 expenseSchema.index({ date: -1 });
 expenseSchema.index({ category: 1, date: -1 });
+expenseSchema.index({ type: 1, date: -1 });
 
 module.exports = mongoose.model('Expense', expenseSchema);
