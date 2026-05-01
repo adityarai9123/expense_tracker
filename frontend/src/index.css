@@ -81,6 +81,7 @@
            transition-all duration-200;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    color-scheme: dark;
   }
   .dark .input-glass:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -117,6 +118,17 @@
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 36px;
+  }
+  .dark .select-glass {
+    color-scheme: dark;
+  }
+  .dark .select-glass option {
+    background: #1e1b2e;
+    color: #e2e8f0;
+  }
+  .select-glass option {
+    background: #ffffff;
+    color: #1e293b;
   }
 
   /* ═══════════════ BUTTONS ═══════════════ */

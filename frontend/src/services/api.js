@@ -1,27 +1,17 @@
 import axios from 'axios';
 
-// In production (Vercel), backend is at /_/backend
-// In development, use the env variable or localhost:5000
+// Backend URL: set VITE_API_BASE_URL to your Render backend URL in production
 const getBaseURL = () => {
-  // Explicit env override always wins
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
-  // Production: same origin, routed through Vercel experimental services
-  if (import.meta.env.PROD) {
-    return '/_/backend';
-  }
-  // Local dev fallback
   return 'http://localhost:5000';
 };
 
-// Centralized Axios instance
 const api = axios.create({
   baseURL: getBaseURL(),
-  timeout: 12000, // 12s timeout — handles slow networks
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  timeout: 12000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
 // Response interceptor — normalize errors
@@ -49,21 +39,27 @@ api.interceptors.response.use(
   }
 );
 
-/**
- * Create a new expense
- * @param {Object} payload - { amount, category, description, date, idempotencyKey }
- */
+/** Create a new expense/income */
 export const createExpense = async (payload) => {
   const response = await api.post('/expenses', payload);
   return response.data;
 };
 
-/**
- * Fetch expenses with optional filtering/sorting
- * @param {Object} params - { category?, sort? }
- */
+/** Fetch all transactions with optional filtering/sorting */
 export const getExpenses = async (params = {}) => {
   const response = await api.get('/expenses', { params });
+  return response.data;
+};
+
+/** Update a transaction */
+export const updateExpense = async (id, payload) => {
+  const response = await api.put(`/expenses/${id}`, payload);
+  return response.data;
+};
+
+/** Delete a transaction */
+export const deleteExpense = async (id) => {
+  const response = await api.delete(`/expenses/${id}`);
   return response.data;
 };
 
